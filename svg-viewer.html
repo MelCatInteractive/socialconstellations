@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>SVG Visualiser</title>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box }
+    body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; font-weight: 300; overflow: hidden }
+    .floating-dots { position: fixed; inset: 0; pointer-events: none; z-index: 1 }
+    .floating-dot { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.6); border-radius: 50%; box-shadow: 0 0 8px rgba(255,255,255,0.4); animation: twinkle 3s infinite alternate, drift 25s linear infinite }
+    @keyframes twinkle { from { opacity: 0.5 } to { opacity: 1 } }
+    @keyframes drift { from { transform: translateY(0) } to { transform: translateY(-40px) } }
+    header { position: absolute; top: 1rem; left: 1rem; text-align: left; z-index: 2 }
+    .nav-link { margin-bottom: 0.4rem }
+    .nav-link a { display: inline-block; font-size: 0.85rem; color: #fff; text-decoration: none; border: 1px solid #fff; padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase; opacity: 0.9; transition: background 0.2s, box-shadow 0.2s, opacity 0.2s }
+    .nav-link a:hover { background: rgba(255,255,255,0.2); box-shadow: 0 0 8px rgba(255,255,255,0.3); opacity: 1 }
+    header h1 { font-size: clamp(1.8rem,5vw,2.5rem); font-weight: 200; letter-spacing: 0.05em; text-shadow: 0 0 8px rgba(255,255,255,0.5); margin: 0.2rem 0 }
+    .instructions { font-size: 0.9rem; opacity: 0.8; margin-top: 0.2rem; text-shadow: 0 0 4px rgba(255,255,255,0.3) }
+    .controls { position: absolute; top: 1rem; right: 1rem; z-index: 2 }
+    .controls select { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #fff; padding: 0.4rem 0.6rem; border-radius: 4px; font-family: inherit; font-size: 0.95rem; appearance: none }
+    .controls select option { color: #000; background: #fff }
+    #svg-container { width: 100vw; height: 100vh; position: relative; z-index: 1 }
+  </style>
+</head>
+<body>
+  <div class="floating-dots"></div>
+  <header>
+    <div class="nav-link"><a href="./" rel="noopener">← Back to Gallery</a></div>
+    <h1>SVG Visualiser</h1>
+    <p class="instructions">Click &amp; drag to pan, scroll to zoom</p>
+  </header>
+  <div class="controls">
+    <select id="svgSelector">
+      <option value="demo_one.svg">Demo One</option>
+      <option value="demo_two.svg">Demo Two</option>
+    </select>
+  </div>
+  <div id="svg-container"></div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var dots = document.querySelector(".floating-dots");
+      for (var i = 0; i < 50; i++) {
+        var dot = document.createElement("div");
+        dot.className = "floating-dot";
+        dot.style.left = Math.random() * 100 + "%";
+        dot.style.top = Math.random() * 100 + "%";
+        dots.appendChild(dot);
+      }
+      var container = document.getElementById("svg-container");
+      var selector = document.getElementById("svgSelector");
+      var panZoomInstance = null;
+      function loadSVG(file) {
+        container.innerHTML = "";
+        var obj = document.createElement("object");
+        obj.type = "image/svg+xml";
+        obj.data = "svg/" + file;
+        obj.style.width = "100%";
+        obj.style.height = "100%";
+        obj.onload = function() {
+          var svgElement = obj.contentDocument.querySelector("svg");
+          if (panZoomInstance) { panZoomInstance.destroy(); }
+          panZoomInstance = svgPanZoom(svgElement, {
+            zoomEnabled: true,
+            panEnabled: true,
+            controlIconsEnabled: false,
+            mouseWheelZoomEnabled: true,
+            fit: true,
+            center: true,
+            minZoom: 0.3,
+            maxZoom: 20,
+            zoomScaleSensitivity: 0.2
+          });
+        };
+        container.appendChild(obj);
+      }
+      selector.addEventListener("change", function() {
+        loadSVG(selector.value);
+      });
+      loadSVG(selector.value);
+    });
+  </script>
+</body>
+</html>
