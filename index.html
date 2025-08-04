@@ -7,75 +7,48 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.css">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Inter',sans-serif;font-weight:300;overflow-x:hidden}
-    .floating-dots{position:fixed;inset:0;pointer-events:none;z-index:1}
-    .floating-dot{position:absolute;width:2px;height:2px;background:rgba(255,255,255,0.6);border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,0.4);animation:twinkle 3s infinite alternate,drift 25s linear infinite}
-    @keyframes twinkle{from{opacity:.5}to{opacity:1}}
-    @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-40px)}}
-    header{text-align:center;padding:6rem 1rem 4rem;position:relative;z-index:2}
-    h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:200;letter-spacing:.05em;text-shadow:0 0 8px rgba(255,255,255,0.5)}
-    .subtitle{font-size:1rem;opacity:.8;margin-top:.5rem;text-transform:uppercase;text-shadow:0 0 4px rgba(255,255,255,0.3)}
+    body{background:#000;color:#fff;font-family:sans-serif;font-weight:300;overflow-x:hidden}
+    header{text-align:center;padding:6rem 1rem 4rem}
+    h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:200}
+    .subtitle{font-size:1rem;margin-top:.5rem;text-transform:uppercase}
     .nav-link{margin-top:1rem}
-    .nav-link a{display:inline-block;font-size:.9rem;color:#fff;text-decoration:none;border:1px solid #fff;padding:.4rem .8rem;border-radius:4px;text-transform:uppercase;opacity:.9;transition:background .2s,box-shadow .2s}
-    .nav-link a:hover{background:rgba(255,255,255,0.2);box-shadow:0 0 8px rgba(255,255,255,0.3);opacity:1}
-    .gallery{max-width:1200px;margin:0 auto;padding:0 1rem 4rem;position:relative;z-index:2}
+    .nav-link a{font-size:.9rem;color:#fff;text-decoration:none;border:1px solid #fff;padding:.4rem .8rem;border-radius:4px;text-transform:uppercase}
+    .gallery{max-width:1200px;margin:0 auto;padding:0 1rem 4rem}
     .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-    .artwork-image{width:100%;border-radius:12px;cursor:pointer;transition:transform .2s,box-shadow .2s;object-fit:cover;box-shadow:0 0 8px rgba(255,255,255,0.05)}
-    .artwork-image:hover{transform:scale(1.03);box-shadow:0 0 16px rgba(255,255,255,0.1)}
-    footer{background:rgba(255,255,255,0.03);padding:2rem 1rem;position:relative;z-index:2}
-    .footer-content{max-width:800px;margin:0 auto;text-align:center}
-    .footer-description{font-size:1rem;line-height:1.5;opacity:.8;margin-bottom:1.5rem;text-shadow:0 0 4px rgba(255,255,255,0.2)}
-    .contact-links{margin-top:1rem}
-    .contact-link{display:inline-block;color:#fff;text-decoration:none;border:1px solid #fff;padding:.5rem 1rem;border-radius:4px;transition:background .2s,box-shadow .2s;box-shadow:0 0 4px rgba(255,255,255,0.2)}
-    .contact-link:hover{background:rgba(255,255,255,0.2);box-shadow:0 0 8px rgba(255,255,255,0.3)}
+    .artwork-image{width:100%;border-radius:12px;cursor:pointer;object-fit:cover}
+    footer{padding:2rem 1rem;text-align:center;background:#111}
+    .contact-link{color:#fff;text-decoration:none;border:1px solid #fff;padding:.5rem 1rem;border-radius:4px}
   </style>
 </head>
 <body>
-  <div class="floating-dots"></div>
   <header>
     <h1>social constellations</h1>
     <p class="subtitle">exploring your Steam social orbits and overlaps</p>
     <div class="nav-link">
-      <a href="svg-viewer.html" rel="noopener">View SVG Visualiser</a>
+      <a href="svg-viewer.html">View SVG Visualiser</a>
     </div>
   </header>
   <main class="gallery">
     <div class="gallery-grid" id="gallery"></div>
   </main>
   <footer>
-    <div class="footer-content">
-      <p class="footer-description">See how your friends, and your friends' friends, are all interconnected in a beautiful web. Clusters, communities, and hidden circles within your network reveal how your social world overlaps and branches out.</p>
-      <div class="contact-links">
-        <a href="https://steamcommunity.com/profiles/76561198156036456/" class="contact-link" rel="noopener">Get Your Own Visualisation</a>
-      </div>
-    </div>
+    <a href="https://steamcommunity.com/profiles/76561198156036456/" class="contact-link">Get Your Own Visualisation</a>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded',function(){
-      var dots=document.querySelector('.floating-dots');
-      for(var i=0;i<50;i++){
-        var d=document.createElement('div');
-        d.className='floating-dot';
-        d.style.left=Math.random()*100+'%';
-        d.style.top=Math.random()*100+'%';
-        dots.appendChild(d);
-      }
       var grid=document.getElementById('gallery');
       var images=['almo.jpg','bloodwebsfullgalaxy.jpg','cat2.jpg','deangalaxy.png','mont2.jpg','porce.jpg'];
       images.forEach(function(name){
         var img=document.createElement('img');
-        img.src='/socialconstellations/gallery/'+name;
+        img.src='gallery/'+name;
         img.alt=name.replace(/\.(png|jpg)$/,'');
         img.loading='lazy';
         img.decoding='async';
         img.className='artwork-image';
         grid.appendChild(img);
       });
-      new Viewer(grid,{
-        toolbar:{zoomIn:1,zoomOut:1,oneToOne:1,reset:1,prev:1,next:1},
-        navbar:false,title:false,movable:true,zoomable:true,scalable:true,transition:true,tooltip:true,fullscreen:false,zoomRatio:0.3
-      });
+      new Viewer(grid);
     });
   </script>
 </body>
